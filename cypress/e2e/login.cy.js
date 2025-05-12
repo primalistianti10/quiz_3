@@ -5,17 +5,21 @@ describe('OrangeHRM Login Feature', () => {
       cy.visit(baseUrl);
     });
   
-    it('menampilkan halaman login', () => {
-      cy.url().should('include', 'orangehrmlive.com');
-      cy.get('input[name="username"]').should('be.visible');
-      cy.get('input[name="password"]').should('be.visible');
-      cy.get('button[type="submit"]').should('be.visible');
-    });
+  it('menampilkan halaman login', () => {
+    cy.url().should('include', 'orangehrmlive.com');
+    cy.get('input[name="username"]').should('be.visible');
+    cy.get('input[name="password"]').should('be.visible');
+    cy.get('button[type="submit"]').should('be.visible');
+  });
 
     it('login dengan username dan password yang benar', () => {
+        cy.intercept('GET', '**/dashboard/**').as('dashboardLoad');
+
         cy.get('input[name="username"]').type('Admin');
         cy.get('input[name="password"]').type('admin123');
         cy.get('button[type="submit"]').click();
+
+        cy.wait('@dashboardLoad');
         cy.url().should('eq','https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index')
     });
 
